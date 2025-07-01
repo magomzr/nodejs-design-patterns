@@ -47,4 +47,28 @@ createReadStream(filename) // Readable: Lee el archivo.
 /*
 La petición HTTP se inicia cuando empieza a escribir datos en `req`, que es un Writable stream.
 Esto sucede en el momento en que se llama a `pipe(req)`, lo que envía los datos comprimidos al servidor.
+
+Es importante tener en cuenta que es UNA SOLA petición HTTP que se envía al servidor, no X peticiones separadas.
+En `req` creamos UNA sola petición.
+En el .pipe(req) se inicia la petición HTTP única.
+
+Eso quiere decir que se abre una conexión HTTP al servidor, los datos se envían en chunks a través de
+esa misma conexión, cada chunk se comprime y se envía al servidor por la conexión abierta; la conexión se mantiene
+abierta hasta que todos los datos se envían y, finalmente, se cierra la conexión cuando termina.
+
+Cliente                    Servidor
+  |                          |
+  |------ HTTP PUT --------->| (Inicia conexión)
+  |                          |
+  |- chunk 1 comprimido ---->|
+  |- chunk 2 comprimido ---->|
+  |- chunk 3 comprimido ---->|
+  |        ...               |
+  |- chunk 1000 comprimido ->|
+  |                          |
+  |<----- HTTP Response -----|
+  |                          |
+  X                          X (Cierra conexión)
+
+Las ventajas de este enfoque es que es eficiente, puesto que es una sola conexión TCP/HTTP.
 */
