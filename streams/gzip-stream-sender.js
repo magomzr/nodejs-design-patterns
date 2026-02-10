@@ -10,10 +10,10 @@ import { createGzip } from "zlib";
 import { createReadStream } from "fs";
 
 // Para obtener el nombre del archivo que vamos a enviar
-import { basename } from "path";
+import { basename } from "node:path";
 
 // Para añadir encriptación del lado del cliente, usamos este Transform y este método
-import { createCipheriv, randomBytes } from "crypto";
+import { createCipheriv, randomBytes } from "node:crypto";
 
 // Nombre del archivo a enviar. "node gzip-stream-sender.js archivo.txt"
 const filename = process.argv[2];
@@ -24,7 +24,7 @@ const serverHost = process.argv[3];
 // Obtenemos el secreto de encriptación desde la línea de comandos.
 // Esperamos que sea un string hexadecimal, que podamos cargar en memoria usando un buffer
 // definido en modo 'hex'.
-const secret = Buffer.from(process.argv[4], 'hex');
+const secret = Buffer.from(process.argv[4], "hex");
 
 // Generamos una secuencia aleatoria de bytes para el vector de inicialización
 // del algoritmo de cifrado. Esto es necesario para que el cifrado sea seguro.
@@ -39,7 +39,7 @@ const httpRequestOptions = {
     "Content-Type": "application/octet-stream", // Datos binarios
     "Content-Encoding": "gzip", // Indica que está comprimido
     "X-Filename": basename(filename), // Nombre del archivo (header personalizado)
-    "X-Initialization-Vector": iv.toString('hex'), // Enviamos el IV en formato hexadecimal
+    "X-Initialization-Vector": iv.toString("hex"), // Enviamos el IV en formato hexadecimal
   },
 };
 
@@ -52,7 +52,7 @@ const req = request(httpRequestOptions, (res) => {
 
 createReadStream(filename) // Readable: Lee el archivo.
   .pipe(createGzip()) // Transform: Comprime el archivo antes de enviarlo
-  .pipe(createCipheriv('aes-192-ccm', secret, iv)) // Transform: Encripta el archivo comprimido
+  .pipe(createCipheriv("aes-192-ccm", secret, iv)) // Transform: Encripta el archivo comprimido
   .pipe(req) // Writable: Envía el archivo comprimido al servidor - Aquí se dispara la petición HTTP.
   .on("finish", () => {
     console.log(`Archivo ${filename} enviado al servidor ${serverHost}`);
