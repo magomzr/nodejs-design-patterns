@@ -18,3 +18,13 @@
 // Para implementar un stream Transform, a diferencia de un Duplex donde se implementa
 // _read() y _write(), en un Transform se implementa un método llamado _transform() y
 // un método _flush().
+
+import { ReplaceStream } from "./replace-stream.mjs";
+
+const replaceStream = new ReplaceStream("World", "Node.js");
+
+replaceStream.on("data", (chunk) => process.stdout.write(chunk.toString()));
+
+replaceStream.write("Hello W");
+replaceStream.write("orld!");
+replaceStream.end("\n");
