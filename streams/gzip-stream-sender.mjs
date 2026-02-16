@@ -1,13 +1,13 @@
 // Aplicación del lado del cliente que enviará un archivo comprimido con gzip a un servidor.
 
 // Para crear la petición que enviaremos al servidor
-import { request } from "http";
+import { request } from "node:http";
 
 // Para crear un stream de Transform, que comprimirá los datos que enviamos
-import { createGzip } from "zlib";
+import { createGzip } from "node:zlib";
 
 // Para crear un stream de lectura para leer el archivo que vamos a enviar
-import { createReadStream } from "fs";
+import { createReadStream } from "node:fs";
 
 // Para obtener el nombre del archivo que vamos a enviar
 import { basename } from "node:path";

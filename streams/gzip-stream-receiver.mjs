@@ -2,7 +2,7 @@
 
 ** Streams
 Los streams son flujos de datos que se procesan de manera secuencial y eficiente, permitiendo trabajar
-en chunks o fragmentos de datos en lugar de cargar todo en memoria de una vez.
+en chunks o fragmentos de datos en lugar de cargar en memoria de una vez.
 
 Existen distintos tipos de streams:
 - Readable: Permite leer datos de una fuente, como un archivo o una solicitud HTTP. Son de sólo lectura.
@@ -58,19 +58,19 @@ G - unzip, Gunzip: Descomprime datos comprimidos con gzip.
 // Servidor que va a recibir un stream comprimido con gzip
 
 // Para crear un servidor HTTP
-import { createServer } from "http";
+import { createServer } from "node:http";
 
 // createWriteStream permite crear un stream de escritura a un archivo.
 // Esto nos permitirá guardar el archivo que recibimos en el sistema de archivos
 // del servidor.
-import { createWriteStream } from "fs";
+import { createWriteStream } from "node:fs";
 
 // createGunzip permite descomprimir el stream que recibimos.
-import { createGunzip } from "zlib";
+import { createGunzip } from "node:zlib";
 
 // Para tomar únicamente el nombre del archivo que recibimos
 // y evitar problemas de seguridad.
-import { basename, join } from "path";
+import { basename, join } from "node:path";
 
 const server = createServer((req, res) => {
   const filename = basename(req.headers["x-filename"]); // Obtenemos el nombre del archivo
